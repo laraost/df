@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <iterator>
 #include <numeric>
 #include <vector>
@@ -61,6 +62,7 @@ auto compute_discrete_frechet_single(ForwardIterator p_point,
 // Trajectories P and Q are given as pairs of forward iterators:
 // P as p_begin and p_end, Q as q_begin and q_end,
 // where *_end points one past the last point of the trajectory.
+// P and Q may not be empty; this is checked by an `assert`.
 //
 // The distance function is given as `dist_func`,
 // a binary function of two `decltype(*p_begin)`s and returning a numeric type.
@@ -73,14 +75,16 @@ auto compute_discrete_frechet(ForwardIterator p_begin, ForwardIterator p_end,
                               ForwardIterator q_begin, ForwardIterator q_end,
                               distance_func dist_func = {})
 {
-    const size_t p_length = std::distance(p_begin, p_end);
-    const size_t q_length = std::distance(q_begin, q_end);
-    if (p_length == 1) { return internal::compute_discrete_frechet_single(p_begin, q_begin, q_end, dist_func); }
-    if (q_length == 1) { return internal::compute_discrete_frechet_single(q_begin, p_begin, p_end, dist_func); }
-
     using distance_t = decltype(distance_func()(*p_begin, *q_begin));
     using row_t = std::vector<distance_t>;
     using size_t = row_t::size_type;
+
+    const size_t p_length = std::distance(p_begin, p_end);
+    const size_t q_length = std::distance(q_begin, q_end);
+    assert(p_length != 0 && q_length != 0);
+    if (p_length == 1) { return internal::compute_discrete_frechet_single(p_begin, q_begin, q_end, dist_func); }
+    if (q_length == 1) { return internal::compute_discrete_frechet_single(q_begin, p_begin, p_end, dist_func); }
+
     std::array<row_t, 2> rows;
     row_t* current_row = &rows[0];
     row_t* next_row = &rows[1];
