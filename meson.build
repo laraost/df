@@ -2,9 +2,7 @@ project('discrete_frechet',
         'cpp',
         default_options: ['cpp_std=c++20',
                           'warning_level=3',
-                          'werror=true',
-                          'b_ndebug=if-release',
-                          'buildtype=release'],
+                          'werror=true'],
         version: '0.0.1')
 
 cpp = meson.get_compiler('cpp')
