@@ -15,6 +15,7 @@ struct squared_euclid {
 
 };
 
+// Some example trajectories at distance 1.
 bool test_1() {
     std::vector<point_t> trajectory_p = {{0,0}, {1,0}, {2,0}, {3,0}};
     std::vector<point_t> trajectory_q = {{0,1}, {1,1}, {2,1}, {3,1}, {4,0}};
@@ -27,6 +28,7 @@ bool test_1() {
     return true;
 }
 
+// A slightly more complex example.
 bool test_2() {
     std::vector<point_t> trajectory_p = {{0,0}, {1,0}, {2,0}, {3,0}};
     std::vector<point_t> trajectory_q = {{1.2,1.1}, {1,1.1}, {2.1,1}, {3.1,1}, {4,0}};
@@ -34,7 +36,21 @@ bool test_2() {
                                                                 trajectory_q.begin(), trajectory_q.begin() + 2);  
     const auto true_distance = squared_euclid()(trajectory_q[1], trajectory_p[3]);
     if (frechet != true_distance) {
-        std::cout << "Test 1: expected Fréchet distance " << true_distance << ".\n";
+        std::cout << "Test 2: expected Fréchet distance " << true_distance << ".\n";
+        return false;
+    }
+    return true;
+}
+
+// Takes a lambda as distance function.
+bool test_3() {
+    std::vector<point_t> trajectory_p = {{0,0}, {1,0}, {2,0}, {3,0}};
+    std::vector<point_t> trajectory_q = {{1.2,1.1}, {1,1.1}, {2.1,1}, {3.1,1}, {4,0}};
+    auto frechet = df::compute_discrete_frechet(trajectory_p.begin(), trajectory_p.end(),
+                                                trajectory_q.begin(), trajectory_q.begin() + 2,
+                                                [](const point_t &, const point_t &) { return 0; } );  
+    if (frechet != 0) {
+        std::cout << "Test 3: expected Fréchet distance 0.\n";
         return false;
     }
     return true;
@@ -44,6 +60,7 @@ int main() {
     int errors = 0;
     errors += static_cast<int>(!test_1());
     errors += static_cast<int>(!test_2());
+    errors += static_cast<int>(!test_3());
 
     std::cout << "Errors: " << errors << "\n";
 
