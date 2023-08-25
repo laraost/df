@@ -11,6 +11,8 @@ plus a distance function.
 
 Example (see also `src/test.cpp`):
 ```
+#include "discrete_frechet.h"
+
 using point_t = std::pair<double, double>;
 std::vector<point_t> trajectory_p = {{0,0}, {1,0}, {2,0}, {3,0}};
 std::vector<point_t> trajectory_q = {{0,1}, {1,1}, {2,1}, {3,1}, {4,0}};
