@@ -56,11 +56,34 @@ bool test_3() {
     return true;
 }
 
+// One trajectory is a single point
+bool test_4() {
+    bool result = true;
+    std::vector<point_t> trajectory_p = {{0,0}, {1,0}, {2,0}, {3,0}};
+    std::vector<point_t> trajectory_q = {{1.2,1.1}, {1,1.1}, {2.1,1}, {3.1,1}, {4,0}};
+    auto frechet_1 = df::compute_discrete_frechet<squared_euclid>(trajectory_p.begin(), ++trajectory_p.begin(),
+                                                                trajectory_q.begin(), trajectory_q.end());  
+    const auto true_distance_1 = squared_euclid()(trajectory_p[0], trajectory_q[4]);
+    if (frechet_1 != true_distance_1) {
+        std::cout << "Test 4: expected Fréchet distance " << true_distance_1 << ".\n";
+        result = false;
+    }
+    auto frechet_2 = df::compute_discrete_frechet<squared_euclid>(trajectory_p.begin(), trajectory_p.end(),
+                                                                  ++trajectory_q.begin(), trajectory_q.begin() + 2);  
+    const auto true_distance_2 = squared_euclid()(trajectory_p[3], trajectory_q[1]);
+    if (frechet_2 != true_distance_2) {
+        std::cout << "Test 4: expected Fréchet distance " << true_distance_2 << ".\n";
+        result = false;
+    }
+    return result;
+}
+
 int main() {
     int errors = 0;
     errors += static_cast<int>(!test_1());
     errors += static_cast<int>(!test_2());
     errors += static_cast<int>(!test_3());
+    errors += static_cast<int>(!test_4());
 
     std::cout << "Errors: " << errors << "\n";
 

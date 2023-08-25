@@ -26,9 +26,33 @@
 #include <algorithm>
 #include <array>
 #include <iterator>
+#include <numeric>
 #include <vector>
 
 namespace df {
+
+namespace internal {
+
+//
+// Computes the discrete Fréchet distance between a trajectory consisting of a single point
+// (given by `p_begin`) and a trajectory Q given by the iterator pair `q_begin`, `q_end`.
+//
+// Time: O(|Q|)
+// Space: O(1)
+//
+template<typename distance_func, typename ForwardIterator>
+auto compute_discrete_frechet_single(ForwardIterator p_point,
+                                     ForwardIterator q_begin, ForwardIterator q_end,
+                                     distance_func dist_func = {}) {
+    auto q_iter = q_begin;
+    auto result = dist_func(*p_point, *q_iter);
+    for (++q_iter; q_iter != q_end; ++q_iter) {
+        result = std::max(result, dist_func(*p_point, *q_iter));
+    }
+    return result;
+}
+
+} // End of namespace `internal`
 
 //
 // Computes the discrete Fréchet distance between trajectories P and Q
@@ -49,13 +73,17 @@ auto compute_discrete_frechet(ForwardIterator p_begin, ForwardIterator p_end,
                               ForwardIterator q_begin, ForwardIterator q_end,
                               distance_func dist_func = {})
 {
+    const size_t p_length = std::distance(p_begin, p_end);
+    const size_t q_length = std::distance(q_begin, q_end);
+    if (p_length == 1) { return internal::compute_discrete_frechet_single(p_begin, q_begin, q_end, dist_func); }
+    if (q_length == 1) { return internal::compute_discrete_frechet_single(q_begin, p_begin, p_end, dist_func); }
+
     using distance_t = decltype(distance_func()(*p_begin, *q_begin));
     using row_t = std::vector<distance_t>;
     using size_t = row_t::size_type;
     std::array<row_t, 2> rows;
     row_t* current_row = &rows[0];
     row_t* next_row = &rows[1];
-    const size_t p_length = std::distance(p_begin, p_end);
     current_row->resize(p_length);
     next_row->resize(p_length);
 
