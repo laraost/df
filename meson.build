@@ -1,6 +1,6 @@
 project('discrete_frechet',
         'cpp',
-        default_options: ['cpp_std=c++20',
+        default_options: ['cpp_std=c++14',
                           'warning_level=3',
                           'werror=true'],
         version: '0.0.1')
