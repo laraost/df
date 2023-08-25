@@ -8,6 +8,20 @@
 
 namespace df {
 
+//
+// Computes the discrete Fréchet distance between trajectories P and Q
+// using the dynamic programming algorithm by Eiter and Mannila (1994).
+//
+// Trajectories P and Q are given as pairs of forward iterators:
+// P as p_begin and p_end, Q as q_begin and q_end,
+// where *_end points one past the last point of the trajectory.
+//
+// The distance function is given as `dist_func`,
+// a binary function of two `decltype(*p_begin)`s and returning a numeric type.
+//
+// Time: O(|P||Q|)
+// Space: O(|P|)
+//
 template<typename distance_func, typename ForwardIterator>
 auto compute_discrete_frechet(ForwardIterator p_begin, ForwardIterator p_end,
                               ForwardIterator q_begin, ForwardIterator q_end,
