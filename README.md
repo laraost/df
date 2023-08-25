@@ -23,3 +23,7 @@ auto frechet = df::compute_discrete_frechet<squared_euclid>(trajectory_p.begin()
                                                                     (a.second - b.second)*(a.second - b.second);
                                                             });  
 ```
+
+## Known Issues
+
+- Currently fails horribly if one of the trajectories is empty
