@@ -1,7 +1,7 @@
 # Discrete Fréchet Distance
 
 This is a header-only implementation of the dynamic programming algorithm by Eiter and Mannila (1994) to compute the discrete Fréchet distance.
-Requires at least C++14.
+Requires at least C++11.
 
 ## Usage
 
